@@ -39,14 +39,14 @@ export function Dashboard() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {view === "grid" && (
         <>
-          <div className="flex justify-between items-center">
-            <h1 className="text-3xl font-bold text-primary">Your Collages</h1>
+          <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
+            <h1 className="text-2xl sm:text-3xl font-bold text-primary">Your Collages</h1>
             <button
               onClick={handleNewCollage}
-              className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors font-semibold"
+              className="w-full sm:w-auto px-4 sm:px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors font-semibold text-sm sm:text-base min-h-[44px] touch-manipulation"
             >
               Create New Collage
             </button>

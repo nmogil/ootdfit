@@ -333,24 +333,24 @@ export function NewCollageForm({ onBack, onCollageCreated }: NewCollageFormProps
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="flex items-center gap-4 mb-6">
+    <div className="max-w-2xl mx-auto px-1 sm:px-0">
+      <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
         <button
           onClick={onBack}
-          className="text-gray-600 hover:text-gray-800 transition-colors"
+          className="text-gray-600 hover:text-gray-800 active:text-gray-900 transition-colors min-h-[44px] flex items-center px-1 touch-manipulation"
         >
           ← Back
         </button>
-        <h1 className="text-3xl font-bold text-primary">Create New Collage</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-primary">Create New Collage</h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
         {/* Image Upload */}
-        <div className="bg-white rounded-lg p-6 shadow-sm">
-          <h2 className="text-xl font-semibold mb-4">Upload Your Outfit Photo</h2>
+        <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm">
+          <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Upload Your Outfit Photo</h2>
 
           <div
-            className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary hover:bg-gray-50 transition-all duration-200 cursor-pointer"
+            className="border-2 border-dashed border-gray-300 rounded-lg p-4 sm:p-8 text-center hover:border-primary hover:bg-gray-50 active:bg-gray-100 transition-all duration-200 cursor-pointer touch-manipulation"
             onDragOver={handleDragOver}
             onDragEnter={handleDragEnter}
             onDragLeave={handleDragLeave}
@@ -358,11 +358,11 @@ export function NewCollageForm({ onBack, onCollageCreated }: NewCollageFormProps
             onClick={() => fileInputRef.current?.click()}
           >
             {imagePreview ? (
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <img
                   src={imagePreview}
                   alt="Preview"
-                  className="max-w-full max-h-64 mx-auto rounded-lg"
+                  className="max-w-full max-h-48 sm:max-h-64 mx-auto rounded-lg"
                 />
                 <div className="space-y-2">
                   <button
@@ -371,34 +371,40 @@ export function NewCollageForm({ onBack, onCollageCreated }: NewCollageFormProps
                       e.stopPropagation();
                       fileInputRef.current?.click();
                     }}
-                    className="text-primary hover:text-primary-hover transition-colors font-semibold"
+                    className="text-primary hover:text-primary-hover active:text-primary-hover transition-colors font-semibold min-h-[44px] px-3 py-2 touch-manipulation"
                   >
                     Change Image
                   </button>
-                  <div className="text-xs text-gray-500">
-                    Click to browse • Drag & drop • Copy & paste (Ctrl+V)
+                  <div className="text-xs sm:text-sm text-gray-500">
+                    <span className="sm:hidden">Tap to browse • Copy & paste</span>
+                    <span className="hidden sm:inline">Click to browse • Drag & drop • Copy & paste (Ctrl+V)</span>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="space-y-4">
-                <div className="text-4xl">📸</div>
+              <div className="space-y-3 sm:space-y-4">
+                <div className="text-3xl sm:text-4xl">📸</div>
                 <div>
-                  <p className="text-primary hover:text-primary-hover transition-colors font-semibold text-lg">
-                    Click to upload
+                  <p className="text-primary hover:text-primary-hover transition-colors font-semibold text-base sm:text-lg">
+                    <span className="sm:hidden">Tap to upload</span>
+                    <span className="hidden sm:inline">Click to upload</span>
                   </p>
-                  <p className="text-gray-600 mt-2">
-                    or drag and drop your image here
+                  <p className="text-gray-600 mt-2 text-sm sm:text-base">
+                    <span className="sm:hidden">or copy & paste your image</span>
+                    <span className="hidden sm:inline">or drag and drop your image here</span>
                   </p>
-                  <p className="text-gray-500 text-sm mt-2">
+                  <p className="text-gray-500 text-xs sm:text-sm mt-2">
                     JPG or PNG, max 10MB
                   </p>
-                  <div className="flex items-center justify-center gap-2 mt-3 text-xs text-gray-500">
-                    <span className="bg-gray-100 px-2 py-1 rounded">Click to browse</span>
+                  <div className="flex items-center justify-center gap-1 sm:gap-2 mt-3 text-xs text-gray-500 flex-wrap">
+                    <span className="bg-gray-100 px-2 py-1 rounded text-xs">
+                      <span className="sm:hidden">Tap to browse</span>
+                      <span className="hidden sm:inline">Click to browse</span>
+                    </span>
+                    <span className="hidden sm:inline">•</span>
+                    <span className="bg-gray-100 px-2 py-1 rounded text-xs hidden sm:inline">Drag & drop</span>
                     <span>•</span>
-                    <span className="bg-gray-100 px-2 py-1 rounded">Drag & drop</span>
-                    <span>•</span>
-                    <span className="bg-gray-100 px-2 py-1 rounded">Paste (Ctrl+V)</span>
+                    <span className="bg-gray-100 px-2 py-1 rounded text-xs">Paste (Ctrl+V)</span>
                   </div>
                 </div>
               </div>
@@ -415,78 +421,78 @@ export function NewCollageForm({ onBack, onCollageCreated }: NewCollageFormProps
         </div>
 
         {/* Products */}
-        <div className="bg-white rounded-lg p-6 shadow-sm">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold">Products in Your Outfit</h2>
+        <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm">
+          <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center mb-3 sm:mb-4">
+            <h2 className="text-lg sm:text-xl font-semibold">Products in Your Outfit</h2>
             <button
               type="button"
               onClick={addProduct}
-              className="text-primary hover:text-primary-hover transition-colors font-semibold"
+              className="w-full sm:w-auto text-primary hover:text-primary-hover active:text-primary-hover transition-colors font-semibold py-2 sm:py-0 min-h-[44px] touch-manipulation"
             >
               + Add Product
             </button>
           </div>
           
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {products.map((product, index) => (
-              <div key={index} className="border rounded-lg p-4">
-                <div className="flex justify-between items-center mb-3">
-                  <h3 className="font-medium">Product {index + 1}</h3>
+              <div key={index} className="border rounded-lg p-3 sm:p-4">
+                <div className="flex justify-between items-center mb-2 sm:mb-3">
+                  <h3 className="font-medium text-sm sm:text-base">Product {index + 1}</h3>
                   {products.length > 1 && (
                     <button
                       type="button"
                       onClick={() => removeProduct(index)}
-                      className="text-red-500 hover:text-red-700 transition-colors"
+                      className="text-red-500 hover:text-red-700 active:text-red-800 transition-colors min-h-[44px] px-2 touch-manipulation"
                     >
                       Remove
                     </button>
                   )}
                 </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                       Product Name *
                     </label>
                     <input
                       type="text"
                       value={product.name}
                       onChange={(e) => updateProduct(index, "name", e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      className="w-full px-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm sm:text-base min-h-[44px] touch-manipulation"
                       placeholder="e.g., Vintage Denim Jacket"
                       required
                     />
                   </div>
-                  
+
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                       Brand *
                     </label>
                     <input
                       type="text"
                       value={product.brand}
                       onChange={(e) => updateProduct(index, "brand", e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      className="w-full px-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm sm:text-base min-h-[44px] touch-manipulation"
                       placeholder="e.g., Levi's"
                       required
                     />
                   </div>
-                  
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+
+                  <div className="sm:col-span-2">
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                       URL (optional)
                     </label>
                     <input
                       type="url"
                       value={product.url}
                       onChange={(e) => updateProduct(index, "url", e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      className="w-full px-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm sm:text-base min-h-[44px] touch-manipulation"
                       placeholder="https://..."
                     />
                   </div>
 
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <div className="sm:col-span-2">
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                       Product Image (optional)
                     </label>
                     <p className="text-xs text-gray-500 mb-2">
@@ -494,14 +500,14 @@ export function NewCollageForm({ onBack, onCollageCreated }: NewCollageFormProps
                     </p>
 
                     {product.imagePreview ? (
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-3 sm:gap-4">
                         <img
                           src={product.imagePreview}
                           alt={`${product.name} preview`}
-                          className="w-16 h-16 object-cover rounded-lg border"
+                          className="w-12 h-12 sm:w-16 sm:h-16 object-cover rounded-lg border"
                         />
                         <div className="flex-1">
-                          <div className="flex gap-2 mb-1">
+                          <div className="flex gap-3 mb-1">
                             <button
                               type="button"
                               onClick={() => {
@@ -511,26 +517,27 @@ export function NewCollageForm({ onBack, onCollageCreated }: NewCollageFormProps
                                 input.onchange = (e) => handleProductImageSelect(index, e as any);
                                 input.click();
                               }}
-                              className="text-primary hover:text-primary-hover transition-colors text-sm"
+                              className="text-primary hover:text-primary-hover active:text-primary-hover transition-colors text-xs sm:text-sm min-h-[44px] px-2 touch-manipulation"
                             >
                               Change
                             </button>
                             <button
                               type="button"
                               onClick={() => removeProductImage(index)}
-                              className="text-red-500 hover:text-red-700 transition-colors text-sm"
+                              className="text-red-500 hover:text-red-700 active:text-red-800 transition-colors text-xs sm:text-sm min-h-[44px] px-2 touch-manipulation"
                             >
                               Remove
                             </button>
                           </div>
                           <div className="text-xs text-gray-500">
-                            Click Change • Drop new image here
+                            <span className="sm:hidden">Tap Change • Drop new image</span>
+                            <span className="hidden sm:inline">Click Change • Drop new image here</span>
                           </div>
                         </div>
                       </div>
                     ) : (
                       <div
-                        className="w-full px-3 py-4 border-2 border-dashed border-gray-300 rounded-md hover:border-primary transition-colors text-gray-500 hover:text-primary cursor-pointer text-center"
+                        className="w-full px-3 py-4 border-2 border-dashed border-gray-300 rounded-md hover:border-primary active:border-primary active:bg-gray-50 transition-all text-gray-500 hover:text-primary cursor-pointer text-center touch-manipulation min-h-[60px] flex items-center justify-center"
                         onDragOver={handleDragOver}
                         onDragEnter={handleDragEnter}
                         onDragLeave={handleDragLeave}
@@ -544,8 +551,11 @@ export function NewCollageForm({ onBack, onCollageCreated }: NewCollageFormProps
                         }}
                       >
                         <div className="space-y-1">
-                          <div>📷 Upload Product Image</div>
-                          <div className="text-xs">Click to browse or drag & drop</div>
+                          <div className="text-sm sm:text-base">📷 Upload Product Image</div>
+                          <div className="text-xs">
+                            <span className="sm:hidden">Tap to browse</span>
+                            <span className="hidden sm:inline">Click to browse or drag & drop</span>
+                          </div>
                         </div>
                       </div>
                     )}
@@ -557,12 +567,12 @@ export function NewCollageForm({ onBack, onCollageCreated }: NewCollageFormProps
         </div>
 
         {/* Style */}
-        <div className="bg-white rounded-lg p-6 shadow-sm">
-          <h2 className="text-xl font-semibold mb-4">Collage Style</h2>
+        <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm">
+          <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Collage Style</h2>
           <select
             value={style}
             onChange={(e) => setStyle(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            className="w-full px-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm sm:text-base min-h-[44px] touch-manipulation"
           >
             <option value="Creative & cute with handwritten notes">Creative & cute with handwritten notes</option>
             <option value="Minimalist and clean">Minimalist and clean</option>
@@ -812,18 +822,18 @@ export function NewCollageForm({ onBack, onCollageCreated }: NewCollageFormProps
         </div>
 
         {/* Submit */}
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
           <button
             type="button"
             onClick={onBack}
-            className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-semibold"
+            className="w-full sm:flex-1 px-4 sm:px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 active:bg-gray-100 transition-colors font-semibold min-h-[44px] touch-manipulation"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={isUploading || !selectedImage}
-            className="flex-1 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full sm:flex-1 px-4 sm:px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-hover active:bg-primary-hover transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px] touch-manipulation"
           >
             {isUploading ? "Creating..." : "Create Collage"}
           </button>

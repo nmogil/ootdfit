@@ -29,11 +29,11 @@ export function CollageGrid({ collages, onViewCollage }: CollageGridProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
       {collages.map((collage) => (
         <div
           key={collage._id}
-          className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer overflow-hidden"
+          className="bg-white rounded-lg shadow-sm hover:shadow-md active:shadow-lg transition-all duration-200 cursor-pointer overflow-hidden transform hover:scale-[1.02] active:scale-[0.98] touch-manipulation"
           onClick={() => onViewCollage(collage._id)}
         >
           <div className="aspect-square bg-gray-100 relative">
@@ -74,11 +74,11 @@ export function CollageGrid({ collages, onViewCollage }: CollageGridProps) {
             )}
           </div>
           
-          <div className="p-4">
-            <div className="text-sm text-gray-500 mb-2">
+          <div className="p-3 sm:p-4">
+            <div className="text-xs sm:text-sm text-gray-500 mb-1 sm:mb-2">
               {new Date(collage._creationTime).toLocaleDateString()}
             </div>
-            <div className="text-sm text-gray-600">
+            <div className="text-xs sm:text-sm text-gray-600 font-medium">
               {collage.products.length} item{collage.products.length !== 1 ? 's' : ''}
             </div>
           </div>

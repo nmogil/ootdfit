@@ -43,7 +43,7 @@ VISUAL VERIFICATION REQUIREMENTS:
 
 EXACT SPELLING REQUIREMENTS - When adding text labels to the collage, you must use these EXACT spellings for brand and product names (do not change, correct, or modify the spelling in any way):
 ${products.map(p => `- Product: "${p.name}" (spell exactly as shown)
-- Brand: "${p.brand}" (spell exactly as shown)`).join('\n')}
+- Brand: "${p.brand}" (spell exact/baly as shown)`).join('\n')}
 
 Work EXCLUSIVELY with this uploaded image and extract/highlight/stylize ONLY the specific items listed above that are actually visible in this particular photo.`;
 

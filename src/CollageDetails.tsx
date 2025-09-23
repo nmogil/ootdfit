@@ -69,49 +69,49 @@ export function CollageDetails({ collageId, onBack }: CollageDetailsProps) {
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="flex items-center gap-4 mb-6">
+    <div className="max-w-4xl mx-auto px-1 sm:px-0">
+      <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
         <button
           onClick={onBack}
-          className="text-gray-600 hover:text-gray-800 transition-colors"
+          className="text-gray-600 hover:text-gray-800 active:text-gray-900 transition-colors min-h-[44px] flex items-center px-1 touch-manipulation"
         >
           ← Back
         </button>
-        <h1 className="text-3xl font-bold text-primary">Collage Details</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-primary">Collage Details</h1>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
         {/* Images */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {collage.status === "completed" && collage.collageImageUrl && (
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h2 className="text-xl font-semibold mb-4">Generated Collage</h2>
+            <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm">
+              <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Generated Collage</h2>
               <img
                 src={collage.collageImageUrl}
                 alt="Generated collage"
                 className="w-full rounded-lg"
               />
-              
-              <div className="flex gap-3 mt-4">
+
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-3 sm:mt-4">
                 <button
                   onClick={exportForInstagram}
-                  className="flex-1 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-colors font-semibold"
+                  className="w-full sm:flex-1 px-3 sm:px-4 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 active:from-purple-700 active:to-pink-700 transition-colors font-semibold text-xs sm:text-sm min-h-[44px] touch-manipulation"
                 >
-                  Export for Instagram (1080x1080)
+                  Export for Instagram
                 </button>
                 <button
                   onClick={exportForTikTok}
-                  className="flex-1 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold"
+                  className="w-full sm:flex-1 px-3 sm:px-4 py-3 bg-black text-white rounded-lg hover:bg-gray-800 active:bg-gray-900 transition-colors font-semibold text-xs sm:text-sm min-h-[44px] touch-manipulation"
                 >
-                  Export for TikTok (1080x1920)
+                  Export for TikTok
                 </button>
               </div>
             </div>
           )}
 
           {collage.originalImageUrl && (
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h2 className="text-xl font-semibold mb-4">Original Photo</h2>
+            <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm">
+              <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Original Photo</h2>
               <img
                 src={collage.originalImageUrl}
                 alt="Original outfit"
@@ -122,10 +122,10 @@ export function CollageDetails({ collageId, onBack }: CollageDetailsProps) {
         </div>
 
         {/* Details */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Status */}
-          <div className="bg-white rounded-lg p-6 shadow-sm">
-            <h2 className="text-xl font-semibold mb-4">Status</h2>
+          <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm">
+            <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Status</h2>
             <div className="flex items-center gap-3">
               {collage.status === "generating" && (
                 <>
@@ -156,19 +156,19 @@ export function CollageDetails({ collageId, onBack }: CollageDetailsProps) {
           </div>
 
           {/* Products */}
-          <div className="bg-white rounded-lg p-6 shadow-sm">
-            <h2 className="text-xl font-semibold mb-4">Products</h2>
-            <div className="space-y-3">
+          <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm">
+            <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Products</h2>
+            <div className="space-y-3 sm:space-y-4">
               {collage.products.map((product, index) => (
-                <div key={index} className="border-l-4 border-primary pl-4">
-                  <div className="font-medium">{product.name}</div>
-                  <div className="text-gray-600">by {product.brand}</div>
+                <div key={index} className="border-l-4 border-primary pl-3 sm:pl-4 py-1">
+                  <div className="font-medium text-sm sm:text-base">{product.name}</div>
+                  <div className="text-gray-600 text-xs sm:text-sm">by {product.brand}</div>
                   {product.url && (
                     <a
                       href={product.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-primary hover:text-primary-hover transition-colors text-sm"
+                      className="inline-block text-primary hover:text-primary-hover active:text-primary-hover transition-colors text-xs sm:text-sm mt-1 min-h-[44px] py-2 touch-manipulation"
                     >
                       View Product →
                     </a>
@@ -179,12 +179,12 @@ export function CollageDetails({ collageId, onBack }: CollageDetailsProps) {
           </div>
 
           {/* Style & Prompt */}
-          <div className="bg-white rounded-lg p-6 shadow-sm">
-            <h2 className="text-xl font-semibold mb-4">Style</h2>
-            <p className="text-gray-700 mb-4">{collage.style}</p>
-            
-            <h3 className="font-semibold mb-2">AI Prompt</h3>
-            <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded">
+          <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm">
+            <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Style</h2>
+            <p className="text-gray-700 mb-3 sm:mb-4 text-sm sm:text-base">{collage.style}</p>
+
+            <h3 className="font-semibold mb-2 text-sm sm:text-base">AI Prompt</h3>
+            <p className="text-xs sm:text-sm text-gray-600 bg-gray-50 p-3 rounded">
               {collage.prompt}
             </p>
           </div>
