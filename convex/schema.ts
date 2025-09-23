@@ -40,6 +40,7 @@ const applicationTables = {
     name: v.string(),
     brand: v.string(),
     url: v.optional(v.string()),
+    imageId: v.optional(v.id("_storage")),
   }).index("by_collage", ["collageId"]),
 };
 

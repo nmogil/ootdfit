@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useMutation } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { toast } from "sonner";
@@ -7,6 +7,9 @@ interface Product {
   name: string;
   brand: string;
   url: string;
+  imageFile?: File;
+  imagePreview?: string;
+  imageId?: string;
 }
 
 interface AdvancedOptions {
@@ -31,7 +34,7 @@ interface NewCollageFormProps {
 export function NewCollageForm({ onBack, onCollageCreated }: NewCollageFormProps) {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [products, setProducts] = useState<Product[]>([{ name: "", brand: "", url: "" }]);
+  const [products, setProducts] = useState<Product[]>([{ name: "", brand: "", url: "", imageFile: undefined, imagePreview: undefined, imageId: undefined }]);
   const [style, setStyle] = useState("Creative & cute with handwritten notes");
   const [isUploading, setIsUploading] = useState(false);
 
@@ -55,31 +58,94 @@ export function NewCollageForm({ onBack, onCollageCreated }: NewCollageFormProps
   const generateUploadUrl = useMutation(api.collages.generateUploadUrl);
   const createCollage = useMutation(api.collages.createCollage);
 
-  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+  useEffect(() => {
+    const handleGlobalPaste = (event: ClipboardEvent) => {
+      const target = event.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+        return;
+      }
+      handlePaste(event);
+    };
 
+    document.addEventListener('paste', handleGlobalPaste);
+    return () => {
+      document.removeEventListener('paste', handleGlobalPaste);
+    };
+  }, []);
+
+  const validateAndProcessImage = (file: File) => {
     if (file.size > 10 * 1024 * 1024) {
       toast.error("Image must be less than 10MB");
-      return;
+      return false;
     }
 
     if (!file.type.startsWith("image/")) {
       toast.error("Please select an image file");
-      return;
+      return false;
     }
 
     setSelectedImage(file);
-    
+
     const reader = new FileReader();
     reader.onload = (e) => {
       setImagePreview(e.target?.result as string);
     };
     reader.readAsDataURL(file);
+    return true;
+  };
+
+  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    validateAndProcessImage(file);
+  };
+
+  const handleDragOver = (event: React.DragEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
+  const handleDragEnter = (event: React.DragEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
+  const handleDragLeave = (event: React.DragEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
+  const handleDrop = (event: React.DragEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const files = Array.from(event.dataTransfer.files);
+    const imageFile = files.find(file => file.type.startsWith("image/"));
+
+    if (!imageFile) {
+      toast.error("Please drop an image file");
+      return;
+    }
+
+    validateAndProcessImage(imageFile);
+  };
+
+  const handlePaste = (event: ClipboardEvent) => {
+    const items = Array.from(event.clipboardData?.items || []);
+    const imageItem = items.find(item => item.type.startsWith("image/"));
+
+    if (imageItem) {
+      event.preventDefault();
+      const file = imageItem.getAsFile();
+      if (file) {
+        validateAndProcessImage(file);
+        toast.success("Image pasted successfully!");
+      }
+    }
   };
 
   const addProduct = () => {
-    setProducts([...products, { name: "", brand: "", url: "" }]);
+    setProducts([...products, { name: "", brand: "", url: "", imageFile: undefined, imagePreview: undefined, imageId: undefined }]);
   };
 
   const removeProduct = (index: number) => {
@@ -91,6 +157,63 @@ export function NewCollageForm({ onBack, onCollageCreated }: NewCollageFormProps
   const updateProduct = (index: number, field: keyof Product, value: string) => {
     const updated = [...products];
     updated[index] = { ...updated[index], [field]: value };
+    setProducts(updated);
+  };
+
+  const validateAndProcessProductImage = (index: number, file: File) => {
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("Image must be less than 10MB");
+      return false;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      return false;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const updated = [...products];
+      updated[index] = {
+        ...updated[index],
+        imageFile: file,
+        imagePreview: e.target?.result as string
+      };
+      setProducts(updated);
+    };
+    reader.readAsDataURL(file);
+    return true;
+  };
+
+  const handleProductImageSelect = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    validateAndProcessProductImage(index, file);
+  };
+
+  const handleProductImageDrop = (index: number, event: React.DragEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const files = Array.from(event.dataTransfer.files);
+    const imageFile = files.find(file => file.type.startsWith("image/"));
+
+    if (!imageFile) {
+      toast.error("Please drop an image file");
+      return;
+    }
+
+    validateAndProcessProductImage(index, imageFile);
+  };
+
+  const removeProductImage = (index: number) => {
+    const updated = [...products];
+    updated[index] = {
+      ...updated[index],
+      imageFile: undefined,
+      imagePreview: undefined,
+      imageId: undefined
+    };
     setProducts(updated);
   };
 
@@ -131,7 +254,7 @@ export function NewCollageForm({ onBack, onCollageCreated }: NewCollageFormProps
     setIsUploading(true);
 
     try {
-      // Upload image
+      // Upload main image
       const uploadUrl = await generateUploadUrl();
       const uploadResponse = await fetch(uploadUrl, {
         method: "POST",
@@ -144,6 +267,38 @@ export function NewCollageForm({ onBack, onCollageCreated }: NewCollageFormProps
       }
 
       const { storageId } = await uploadResponse.json();
+
+      // Upload product images
+      const productsWithImages = await Promise.all(
+        validProducts.map(async (product) => {
+          let imageId: string | undefined = undefined;
+
+          if (product.imageFile) {
+            try {
+              const productUploadUrl = await generateUploadUrl();
+              const productUploadResponse = await fetch(productUploadUrl, {
+                method: "POST",
+                headers: { "Content-Type": product.imageFile.type },
+                body: product.imageFile,
+              });
+
+              if (productUploadResponse.ok) {
+                const { storageId: productStorageId } = await productUploadResponse.json();
+                imageId = productStorageId;
+              }
+            } catch (error) {
+              console.error(`Failed to upload image for product ${product.name}:`, error);
+            }
+          }
+
+          return {
+            name: product.name.trim(),
+            brand: product.brand.trim(),
+            url: product.url.trim() || undefined,
+            imageId,
+          };
+        })
+      );
 
       // Filter advanced options to only include non-default values
       const filteredAdvancedOptions: Partial<AdvancedOptions> = {};
@@ -162,11 +317,7 @@ export function NewCollageForm({ onBack, onCollageCreated }: NewCollageFormProps
       // Create collage
       await createCollage({
         originalImageId: storageId,
-        products: validProducts.map(p => ({
-          name: p.name.trim(),
-          brand: p.brand.trim(),
-          url: p.url.trim() || undefined,
-        })),
+        products: productsWithImages,
         style,
         advancedOptions: Object.keys(filteredAdvancedOptions).length > 0 ? filteredAdvancedOptions : undefined,
       });
@@ -197,8 +348,15 @@ export function NewCollageForm({ onBack, onCollageCreated }: NewCollageFormProps
         {/* Image Upload */}
         <div className="bg-white rounded-lg p-6 shadow-sm">
           <h2 className="text-xl font-semibold mb-4">Upload Your Outfit Photo</h2>
-          
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+
+          <div
+            className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary hover:bg-gray-50 transition-all duration-200 cursor-pointer"
+            onDragOver={handleDragOver}
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            onClick={() => fileInputRef.current?.click()}
+          >
             {imagePreview ? (
               <div className="space-y-4">
                 <img
@@ -206,33 +364,47 @@ export function NewCollageForm({ onBack, onCollageCreated }: NewCollageFormProps
                   alt="Preview"
                   className="max-w-full max-h-64 mx-auto rounded-lg"
                 />
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="text-primary hover:text-primary-hover transition-colors"
-                >
-                  Change Image
-                </button>
+                <div className="space-y-2">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      fileInputRef.current?.click();
+                    }}
+                    className="text-primary hover:text-primary-hover transition-colors font-semibold"
+                  >
+                    Change Image
+                  </button>
+                  <div className="text-xs text-gray-500">
+                    Click to browse • Drag & drop • Copy & paste (Ctrl+V)
+                  </div>
+                </div>
               </div>
             ) : (
               <div className="space-y-4">
                 <div className="text-4xl">📸</div>
                 <div>
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="text-primary hover:text-primary-hover transition-colors font-semibold"
-                  >
+                  <p className="text-primary hover:text-primary-hover transition-colors font-semibold text-lg">
                     Click to upload
-                  </button>
+                  </p>
+                  <p className="text-gray-600 mt-2">
+                    or drag and drop your image here
+                  </p>
                   <p className="text-gray-500 text-sm mt-2">
                     JPG or PNG, max 10MB
                   </p>
+                  <div className="flex items-center justify-center gap-2 mt-3 text-xs text-gray-500">
+                    <span className="bg-gray-100 px-2 py-1 rounded">Click to browse</span>
+                    <span>•</span>
+                    <span className="bg-gray-100 px-2 py-1 rounded">Drag & drop</span>
+                    <span>•</span>
+                    <span className="bg-gray-100 px-2 py-1 rounded">Paste (Ctrl+V)</span>
+                  </div>
                 </div>
               </div>
             )}
           </div>
-          
+
           <input
             ref={fileInputRef}
             type="file"
@@ -311,6 +483,72 @@ export function NewCollageForm({ onBack, onCollageCreated }: NewCollageFormProps
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                       placeholder="https://..."
                     />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Product Image (optional)
+                    </label>
+                    <p className="text-xs text-gray-500 mb-2">
+                      Upload a clear image of this specific product for better collage accuracy
+                    </p>
+
+                    {product.imagePreview ? (
+                      <div className="flex items-center gap-4">
+                        <img
+                          src={product.imagePreview}
+                          alt={`${product.name} preview`}
+                          className="w-16 h-16 object-cover rounded-lg border"
+                        />
+                        <div className="flex-1">
+                          <div className="flex gap-2 mb-1">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const input = document.createElement('input');
+                                input.type = 'file';
+                                input.accept = 'image/*';
+                                input.onchange = (e) => handleProductImageSelect(index, e as any);
+                                input.click();
+                              }}
+                              className="text-primary hover:text-primary-hover transition-colors text-sm"
+                            >
+                              Change
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => removeProductImage(index)}
+                              className="text-red-500 hover:text-red-700 transition-colors text-sm"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            Click Change • Drop new image here
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div
+                        className="w-full px-3 py-4 border-2 border-dashed border-gray-300 rounded-md hover:border-primary transition-colors text-gray-500 hover:text-primary cursor-pointer text-center"
+                        onDragOver={handleDragOver}
+                        onDragEnter={handleDragEnter}
+                        onDragLeave={handleDragLeave}
+                        onDrop={(e) => handleProductImageDrop(index, e)}
+                        onClick={() => {
+                          const input = document.createElement('input');
+                          input.type = 'file';
+                          input.accept = 'image/*';
+                          input.onchange = (e) => handleProductImageSelect(index, e as any);
+                          input.click();
+                        }}
+                      >
+                        <div className="space-y-1">
+                          <div>📷 Upload Product Image</div>
+                          <div className="text-xs">Click to browse or drag & drop</div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

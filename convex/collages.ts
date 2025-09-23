@@ -21,19 +21,31 @@ function buildPrompt(
     borderStyle?: string;
   }
 ) {
-  let prompt = `Create a fashion mood board collage in ${style} style. The collage should feature cutouts and illustrations of ONLY these specific fashion items from the uploaded image: ${productsText}.
+  let prompt = `❌ CRITICAL RESTRICTIONS - READ FIRST ❌
+- NEVER add clothing items, accessories, or fashion pieces beyond the exact list below
+- NEVER use stock photos or generic illustrations of similar items
+- NEVER invent items that "would go well" with the outfit
+- NEVER add complementary pieces not visible in the uploaded image
+- ONLY use visual elements that can be directly seen in the uploaded photo
+- ALWAYS include the orginal model in the collage
 
-CRITICAL RESTRICTIONS:
-1. DO NOT add, invent, or include any products, items, or fashion pieces that are not explicitly listed below
-2. DO NOT create additional clothing items, accessories, or fashion elements beyond what the user specified
-3. ONLY use and reference the exact items visible in the uploaded photo that the user has identified
-4. Base all visual elements on the actual uploaded image - do not add fictional or imagined items
+STRICT REQUIREMENT: You must ONLY work with the uploaded image and create a collage using EXCLUSIVELY the following items that are actually visible in that specific photo. DO NOT ADD, INVENT, OR IMAGINE any additional fashion items.
+
+Fashion items visible in the uploaded image that you MUST use (and ONLY these): ${productsText}.
+
+Create a fashion mood board collage in ${style} style featuring ONLY these specific items from the uploaded image.
+
+VISUAL VERIFICATION REQUIREMENTS:
+1. Before adding any item to the collage, verify it is actually visible in the uploaded image
+2. If you cannot clearly see an item in the uploaded photo, DO NOT include it
+3. Use ONLY the visual elements, colors, and textures from the actual uploaded image
+4. DO NOT supplement with stock photos, illustrations, or imagined versions of the items
 
 EXACT SPELLING REQUIREMENTS - When adding text labels to the collage, you must use these EXACT spellings for brand and product names (do not change, correct, or modify the spelling in any way):
 ${products.map(p => `- Product: "${p.name}" (spell exactly as shown)
 - Brand: "${p.brand}" (spell exactly as shown)`).join('\n')}
 
-Work exclusively with the uploaded image and the products listed above. The collage should be a creative arrangement and styling of these specific items only.`;
+Work EXCLUSIVELY with this uploaded image and extract/highlight/stylize ONLY the specific items listed above that are actually visible in this particular photo.`;
 
   // Add advanced options if provided
   if (advancedOptions) {
@@ -144,7 +156,16 @@ Work exclusively with the uploaded image and the products listed above. The coll
 - Include handwritten-style labels with these exact brand names and product names as provided above
 - Make it look like a professional fashion mood board with a clean layout, good typography, and stylish presentation
 - Size should be 1080x1080 pixels, perfect for social media sharing
-- REMEMBER: Only use the specific items from the uploaded image that the user identified - do not add any other fashion items or products`;
+
+🔍 FINAL VERIFICATION CHECKLIST:
+Before generating the collage, confirm:
+□ Every item in the collage is from the provided list
+□ Every item is actually visible in the uploaded image
+□ No additional items have been added or invented
+□ No stock photos or generic illustrations are used
+□ All visual elements come from the actual uploaded photo
+
+REMEMBER: Only use the specific items from the uploaded image that the user identified - do not add any other fashion items or products`;
 
   return prompt;
 }
@@ -225,6 +246,7 @@ export const createCollage = mutation({
       name: v.string(),
       brand: v.string(),
       url: v.optional(v.string()),
+      imageId: v.optional(v.id("_storage")),
     })),
     style: v.string(),
     advancedOptions: v.optional(v.object({
@@ -312,7 +334,20 @@ export const generateCollage = internalAction({
 export const getCollageForGeneration = internalQuery({
   args: { collageId: v.id("collages") },
   handler: async (ctx, args) => {
-    return await ctx.db.get(args.collageId);
+    const collage = await ctx.db.get(args.collageId);
+    if (!collage) {
+      return null;
+    }
+
+    const products = await ctx.db
+      .query("products")
+      .withIndex("by_collage", (q) => q.eq("collageId", collage._id))
+      .collect();
+
+    return {
+      ...collage,
+      products,
+    };
   },
 });
 

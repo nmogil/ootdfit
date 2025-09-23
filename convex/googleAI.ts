@@ -38,8 +38,35 @@ export const generateCollageWithGoogle = internalAction({
       const imageBuffer = await imageResponse.arrayBuffer();
       const base64Image = Buffer.from(imageBuffer).toString('base64');
 
+      // Fetch product images if available
+      const productImages = [];
+      if (collage.products) {
+        for (const product of collage.products) {
+          if (product.imageId) {
+            try {
+              const productImageUrl = await ctx.storage.getUrl(product.imageId);
+              if (productImageUrl) {
+                const productResponse = await fetch(productImageUrl);
+                const productBuffer = await productResponse.arrayBuffer();
+                const productBase64 = Buffer.from(productBuffer).toString('base64');
+                productImages.push({
+                  inlineData: {
+                    mimeType: "image/png",
+                    data: productBase64,
+                  },
+                });
+              }
+            } catch (error) {
+              console.error(`Failed to fetch product image for ${product.name}:`, error);
+            }
+          }
+        }
+      }
+
       // Enhanced prompt for better collage generation
-      const enhancementPrompt = `${collage.prompt}
+      let enhancementPrompt = `${collage.prompt}
+${productImages.length > 0 ? `
+ADDITIONAL IMAGES PROVIDED: You have been provided with individual product images for specific items (${productImages.length} images). Use these as precise visual references to ensure accurate representation of each item and prevent adding items not actually present.` : ''}
 
 Please create a stylish fashion mood board collage that incorporates elements from the uploaded outfit photo. The collage should:
 - Feature the original outfit as inspiration
@@ -60,6 +87,7 @@ Make it look like a high-end fashion magazine mood board with clean layout and g
             data: base64Image,
           },
         },
+        ...productImages,
       ];
 
       // Make the API call using Gemini
