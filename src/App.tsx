@@ -10,7 +10,7 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm h-16 flex justify-between items-center border-b shadow-sm px-4">
-        <h2 className="text-xl font-semibold text-primary">OOTD Fit Collage</h2>
+        <h2 className="text-xl font-semibold text-primary">OOTD Collage</h2>
         <Authenticated>
           <SignOutButton />
         </Authenticated>
@@ -44,7 +44,7 @@ function Content() {
       <Unauthenticated>
         <div className="flex flex-col items-center justify-center min-h-[400px] gap-8">
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-primary mb-4">OOTD Fit Collage</h1>
+            <h1 className="text-4xl font-bold text-primary mb-4">OOTD Collage</h1>
             <p className="text-xl text-secondary mb-8">
               Create beautiful fashion mood boards from your outfit photos
             </p>

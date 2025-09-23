@@ -1,4 +1,4 @@
-# OOTD Fit Collage App
+# OOTD Collage App
   
 This is a project built using [Convex](https://convex.dev) as its backend.
   
