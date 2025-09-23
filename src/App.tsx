@@ -4,6 +4,7 @@ import { SignInForm } from "./SignInForm";
 import { SignOutButton } from "./SignOutButton";
 import { Toaster } from "sonner";
 import { Dashboard } from "./Dashboard";
+import { Analytics } from '@vercel/analytics/react';
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
         <Content />
       </main>
       <Toaster />
+      <Analytics />
     </div>
   );
 }
