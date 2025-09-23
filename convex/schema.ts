@@ -11,6 +11,28 @@ const applicationTables = {
     style: v.string(),
     status: v.union(v.literal("generating"), v.literal("completed"), v.literal("failed")),
     errorMessage: v.optional(v.string()),
+    advancedOptions: v.optional(v.object({
+      // Visual Style
+      colorPalette: v.optional(v.string()),
+      mood: v.optional(v.string()),
+
+      // Typography
+      textStyle: v.optional(v.string()),
+      showLabels: v.optional(v.boolean()),
+      labelPlacement: v.optional(v.string()),
+
+      // Layout
+      layout: v.optional(v.string()),
+      spacing: v.optional(v.string()),
+
+      // Background
+      background: v.optional(v.string()),
+      texture: v.optional(v.boolean()),
+
+      // Special Effects
+      decorativeElements: v.optional(v.boolean()),
+      borderStyle: v.optional(v.string()),
+    })),
   }).index("by_user", ["userId"]),
   
   products: defineTable({
