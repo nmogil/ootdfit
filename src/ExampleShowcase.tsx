@@ -55,7 +55,7 @@ export function ExampleShowcase({ onGetStarted }: ExampleShowcaseProps) {
                 <img
                   src="/example_before.png"
                   alt="Original outfit photo - mirror selfie"
-                  className="w-full h-auto max-h-64 object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-auto max-h-64 object-contain group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
             </div>
@@ -70,7 +70,7 @@ export function ExampleShowcase({ onGetStarted }: ExampleShowcaseProps) {
                 <img
                   src="/example_after.png"
                   alt="Transformed collage with labeled outfit pieces"
-                  className="w-full h-auto max-h-64 object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-auto max-h-64 object-contain group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
             </div>
